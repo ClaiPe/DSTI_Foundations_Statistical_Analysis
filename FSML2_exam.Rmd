@@ -1,0 +1,1323 @@
+---
+title: "Foundations of Statistical Analysis and Machine Learning - Part 2"
+author: "Claire Peyran"
+date: "2025-08-31"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise A: 
+Let X and Y be two independent random variables with exponential distribution of parameters $\lambda$ and $\mu$.  
+
+## 1. Compute the joint density $f_{X,Y}(x, y)$ ?  
+  
+  
+A random variable X has an exponential distribution with parameter $\lambda$ when its probability density function is:
+$$X \sim Exponential(\lambda)$$
+$$
+f_X(x)=\begin{cases} \lambda e^{-\lambda x}, & \text{if } x \ge 0 \\ 0, & \text{if } x<0 \end{cases}
+\qquad \text{with } \lambda \geq 0
+$$
+and similarly, for Y with parameter $\mu$:
+$$Y \sim Exponential(\mu)$$
+$$
+f_Y(y)=\begin{cases} \mu e^{-\mu y}, & \text{if } y\ge0 \\ 0, & \text{if } y<0 \end{cases}
+\qquad \text{with } \mu \geq 0
+$$
+These functions are the marginal density functions (PDF) and represent the probability of each value of a random variable. Thus it is always positive and the sum of each value is 1 (i.e the integrate = 1).
+
+
+And if we focus on $(X, Y)$:  
+$F_{X,Y}(x, y)$ is the joint density function, thus we have:
+$F_{X,Y} : \mathbb{R}^2 \rightarrow \mathbb{R}$ such that: 
+$$\forall (x,y) \in \mathbb{R}^2 ,\qquad  F_{X,Y}(x, y) \geq 0$$
+and $$\int\!\!\int_{\mathbb{R}^2} f_{X,Y}(x, y)\,dx\,dy = 1$$
+
+Then, because X and Y are **independent**, and **continuous** (exponential distribution), the joint PDF is the product of the marginal PDFs:
+$$f_{X,Y}(x, y) = f_X(x) . f_Y(y)$$
+
+$$\Rightarrow f_{X,Y}(x, y) = \lambda e^{-\lambda x} . \mu e^{-\mu y}$$
+for $x \geq 0$ and $y \geq 0$
+
+$$
+\Leftrightarrow 
+f_{X,Y}(x,y) = \lambda \mu e^{-\lambda x - \mu y}, \qquad x \geq 0, \, y \geq 0.
+$$
+And for other values, at least one marginal PDF is zero, thus the joint PDF is zero.
+Thus
+
+$$
+\boxed{
+f_{X,Y}(x,y)=\begin{cases}
+\lambda\mu\,e^{-\lambda x - \mu y}, & \text{if} \ x\ge 0,\; y\ge 0\\
+0, & \text{otherwise} 
+\end{cases}
+}
+$$
+
+We can check:  
+**Positivity**: for all $x$ and $y$ the function is always positive because $\lambda$ and $\mu$ are $\geq 0$ and exponential are always positive. 
+
+By definition, the PDF should **integrate to 1** over the whole space.
+$$
+\int_0^{\infty}\int_0^{\infty} f_{X,Y}(x, y)\,dx\,dy = \int_0^{\infty}\int_0^{\infty} \lambda\mu\,e^{-\lambda x - \mu y}\,dx\,dy
+$$
+Integrate with regards to $x$ first (treat $y$ as a constant):
+$$
+\begin{aligned}
+\int_0^{\infty}\lambda e^{-\lambda x}\,dx &= \left[  - e^{-\lambda x} \right]_0^\infty \\ 
+&= 0 - (-1)\\
+&= 1
+\end{aligned}
+$$
+Then we integrate with regards to $y$:
+$$
+\begin{aligned}
+\int_0^{\infty}\mu e^{-\mu y}\,dy &= \left[  - e^{-\mu y} \right]_0^\infty \\
+&= 0 - (-1)\\
+&= 1
+\end{aligned}
+$$
+Finally we have:  
+$$
+\int_0^{\infty}\int_0^{\infty} f_{X,Y}(x, y)\,dx\,dy = 1 \cdot 1 = 1
+$$
+
+This confirms the joint PDF is valid.  
+
+## 2. Compute $P(X \leq Y)$
+  
+$P(X \leq Y)$ represents the probability that the value of $X$ is smaller or equal to the value of $Y$.  
+
+So using the joint PDF from part 1,  
+$$
+f_{X, Y} = \lambda \mu e^{-\lambda x - \mu y}, \qquad \text{with} \, x \geq 0, \, y \geq 0
+$$
+
+We write the probability that $X \leq Y$ as a double integral over the region $\{(x,y) : 0 \leq x \leq y < \infty \}$ leading to:  
+
+$$
+\begin{aligned}
+P(X \leq Y) &= \int_{y=0}^{\infty}\int_{x=0}^{y} f_{X,Y}(x, y)\,dx\,dy \\
+\\
+&= \int_{y=0}^{\infty}\int_{x=0}^{y} \lambda\mu\,e^{-\lambda x - \mu y}\,dx\,dy \qquad \text{(from part 1.)}
+\end{aligned}
+$$
+
+
+
+$x$ ranges from 0 to $y$ because of $x \leq y$.
+
+So let's start with the **inner integrate**:  
+We integrate with respect to $x$, so $y$ is treated as a constant.  
+$$
+\begin{aligned}
+\int_{x=0}^{y} \lambda\mu\,e^{-\lambda x - \mu y}\,dx &= \lambda\mu \int_0^y e^{-\lambda x - \mu y}\, dx \\
+\\
+&= \lambda\mu \int_0^y e^{-\lambda x} \cdot e^{ - \mu y}\, dx\, \qquad \text{(split the exponential)} \\
+\\
+&= \lambda\mu e^{ - \mu y}\int_0^y e^{-\lambda x} \, dx\, \qquad \text{(factor out}\,  e^{- \mu y}\, \text{since it does not depend on x) } \\  
+\\
+&= \lambda\mu e^{ - \mu y}\left[ \frac{-1}{\lambda} e^{-\lambda x}\right]_0^y \\
+\\
+&= \lambda\mu e^{ - \mu y}\,(\frac{-1}{\lambda} e^{-\lambda y} - \frac{-1}{\lambda} e^0 ) \\
+\\
+&= \lambda\mu e^{ - \mu y}\,(\frac{-1}{\lambda} e^{-\lambda y} + \frac{1}{\lambda}) \\
+\\
+&= \lambda\mu e^{ - \mu y} \cdot \frac{-1}{\lambda} e^{-\lambda y} +  \lambda\mu e^{ - \mu y} \cdot \frac{-1}{\lambda} \\
+\\
+&= \mu e^{- \mu y} - \mu e^{- \mu y - \lambda y} \\
+\\
+&= \mu e^{- \mu y}\,( 1 - e ^{- \lambda y})
+\end{aligned}
+$$
+
+
+So now we have :  
+
+$$
+P(X \leq Y) = \int_{0}^{\infty}\mu e^{- \mu y}\,( 1 - e ^{- \lambda y}) \, dy
+$$
+
+**Outer integral:**  
+To do the integration, we can separate it in two parts:  
+
+$$
+P(X \leq Y) = \int_{0}^{\infty}\mu e^{- \mu y}\, dy - \int_0^{\infty}\mu e^{- \mu y}\cdot e^{- \lambda y}\, dy \\
+\\
+\Rightarrow \quad P(X \leq Y) = \int_{0}^{\infty}\mu e^{- \mu y}\, dy - \int_0^{\infty}\mu e^{- (\mu +\lambda) y}\, dy
+$$
+Now we compute each part with limits...  
+
+
+First part:  
+$$
+\begin{aligned}
+\int_{0}^{\infty}\mu e^{- \mu y}\, dy &= \mu \int_{0}^{\infty} e^{- \mu y}\, dy \\
+\\
+&= \mu  \left[ \frac{-1}{\mu} e^{-\mu y}\right]_0^{\infty} \\
+\\
+&= \mu \left( \lim_{y \to \infty} (\frac{-1}{\mu} e^{-\mu y}) - \frac{-1}{\mu} e^{0}) \right) \\
+\\
+&= \mu \left( \frac{-1}{\mu} \cdot 0 - (-\frac{1}{\mu} e ^0 ) \right)  \qquad \text{ since when}\, y \rightarrow \infty \text{, we have}\,  e^{-\mu y} \rightarrow 0 \\
+\\
+&= \mu \cdot( \frac{1}{\mu}) \\
+\\
+&= 1
+\end{aligned}
+$$
+
+Second part:  
+$$
+\begin{aligned}
+\int_0^{\infty}\mu e^{- (\mu +\lambda) y}\, dy &= \mu \int_0^{\infty}e^{- (\mu +\lambda) y}\, dy \\
+\\
+&= \mu  \left[ \frac{-1}{\mu + \lambda} e^{-(\mu + \lambda) y}\right]_0^{\infty} \\
+\\
+&= \mu  \left( \frac{-1}{\mu + \lambda} \cdot 0  + \frac{1}{\mu + \lambda} \cdot e^0\right)  \qquad \text{ since when}\, y \rightarrow \infty \text{, we have}\,  e^{-\mu y} \rightarrow 0 \\
+\\
+&= \frac{\mu}{\mu + \lambda} \\
+\end{aligned}
+$$
+... and then do the subtraction:  
+$$
+\begin{aligned}
+P(X \leq Y) &= \int_{0}^{\infty}\mu e^{- \mu y}\, dy - \int_0^{\infty}\mu e^{- (\mu +\lambda) y}\, dy \\
+\\
+&= 1 - \frac{\mu}{\mu + \lambda} \\
+\\
+&= \frac{(\mu + \lambda) - \mu}{\mu + \lambda} \\
+\\
+&= \frac{\lambda}{\mu + \lambda}
+\end{aligned}
+$$
+
+So the final result is :  
+$$
+\boxed{P(X \leq Y) =  \frac{\lambda}{\mu + \lambda}}
+$$
+
+## 3. Let $Z = Max(X, Y)$. Compute the density of $Z$.
+
+We need to find the **PDF** of $F$. We know that $X \sim Exponential(\lambda)$ and $Y \sim Exponential(\lambda)$, they are independent and $\lambda \geq 0$ and $\mu \geq 0$.  
+
+Since exponential is non negative, $X \geq 0$ and $Y \geq 0$, so $Z = Max(X, Y) \geq 0$.  
+For $z < 0$, $f_Z(z) = 0$.  
+So we only need to find values for $z \geq 0$.  
+
+Because $Z$ is defined by a $Max()$ of the two variables $X$ and $Y$ is not a linear transformation. We need to first find the **distribution function** of $Z$, then **differentiate** to get the **density**.  
+
+- **Step 1**: find the distribution of $Z$: $F_Z$
+- **Step 2**: deduce the density function $f_Z$ by differentiation of $F_Z$, since it follows the rule $f_Z = F_Z'$.
+
+**Step 1:** Find the distribution  
+So for $z \geq 0$:
+
+$$
+\begin{aligned}
+F_Z(z) &= P(Z \leq z) \\
+\\
+&= P(Max(X,Y) \leq z) \\
+\\
+&= P(X \leq z, Y \leq z) \\
+\\
+&= P(X \leq z) \cdot P(Y \leq z) \qquad \text{since}\, X\, \text{and } Y\, \text{are independent} \\
+\end{aligned}
+$$
+The probabilities that $X \leq z$ and $Y \leq z$ are the integrates (i.e $F_X(z)$ and $F_Y(z)$), thus:  
+
+$$
+\begin{aligned}
+P(X \leq z) \cdot P(Y \leq z) &=\int_0^z f_X(z) dx\,  \cdot\, \int_0^z f_Y(z) dy \\
+\\
+&= \int_0^z \lambda e^{- \lambda x}\,  dx\, \cdot\ \int_0^z \mu e^{- \mu y}\,  dy 
+\end{aligned}
+$$
+Let's compute them separately:  
+
+$$
+\begin{aligned}
+\int_0^z \lambda e^{- \lambda x}\,  dx\, &= \lambda \int_0^z e^{- \lambda x}\,  dx\  &\quad \int_0^z \mu e^{- \mu y}\,  dy &= \mu \int_0^z e^{- \mu y}\,  dy \\
+\\
+&= \lambda \left[ \frac{-1}{\lambda} e^{-\lambda x} \right]_0^z &\quad &= \mu \left[ \frac{-1}{\mu} e^{-\mu y} \right]_0^z \\
+\\
+&= \lambda \left( \frac{-1}{\lambda} e^{-\lambda z} - (\frac{-1}{\lambda}e^0)\right) &\quad &= \mu \left( \frac{-1}{\mu} e^{-\mu z} - (\frac{-1}{\mu}e^0)\right) \\
+\\
+&= \lambda \left( \frac{-1}{\lambda} e^{-\lambda z} + \frac{1}{\lambda}\right) &\quad &= \mu \left( \frac{-1}{\mu} e^{-\mu z} + \frac{1}{\mu}\right) \\
+\\
+&= 1 - e^{- \lambda z} &\quad &= 1 - e^{- \mu z} 
+\end{aligned}
+$$
+
+So if we go back to $F_Z(z)$:  
+
+$$
+\begin{aligned}
+P(X \leq z) \cdot P(Y \leq z) 
+&= \int_0^z \lambda e^{- \lambda x}\,  dx\, \cdot\ \int_0^z \mu e^{- \mu y}\,  dy \\
+\\
+&= (1 - e^{- \lambda z})\, \cdot\, (1 - e^{- \mu z})
+\end{aligned}
+$$
+So, at this end of step 1 we have:  
+
+$$
+F_Z(z) = (1 - e^{- \lambda z})\, \cdot\, (1 - e^{- \mu z})\, \qquad z \geq0
+$$
+**Step 2:**  
+We need to differentiate $F_Z$, because $f_Z(z) = F_Z'(z)$.  
+We use the **product rule**:  
+If $F_Z(z) = u(z).v(z)$, then:  
+
+$$
+F_Z'(z) = u'(z) \cdot v(z) + u(z) \cdot v'(z)
+$$
+So we define:  
+$$
+\begin{aligned}
+u(z) &= 1 - e^{-\lambda z} &\quad v(z) &= 1 - e^{- \mu z} \\
+\\
+u'(z) &= 0 - (- \lambda) \cdot e^{-\lambda z} &\quad v'(z) &= 0 - (- \mu) \cdot e^{-\mu z} \\
+\\
+u'(z) &= \lambda e^{-\lambda z} &\quad v'(z) &= \mu e^{-\mu z}
+\end{aligned}
+$$
+So:  
+$$
+\begin{aligned}
+F_Z'(z) &= u'(z) \cdot v(z) + u(z) \cdot v'(z) \\
+\\
+&= (\lambda e^{-\lambda z}) \cdot (1 - e^{- \mu z}) + (1 - e^{-\lambda z}) \cdot (\mu e^{-\mu z}) \\
+\\
+&= \lambda e^{-\lambda z} - \lambda e^{-\lambda z} \cdot e^{-\mu z} + \mu e^{-\mu z} - \mu e^{-\mu z} \cdot  e^{-\lambda z} \\
+\\
+&= \lambda e^{-\lambda z} - \lambda e^{- z(\lambda + \mu)} + \mu e^{-\mu z} - \mu e^{- z (\mu + \lambda)} \\
+\\
+&= \lambda e^{-\lambda z} + \mu e^{-\mu z} - (\lambda + \mu) e^{- z (\lambda + \mu)}
+\end{aligned}
+$$
+
+So the density function of $Z$ is :  
+
+$$
+\boxed{
+f_Z(z) = \begin{cases} \lambda e^{-\lambda z} + \mu e^{-\mu z} - (\lambda + \mu) e^{- z (\lambda + \mu)}  & \text{if } z \geq 0  \\
+0 & \text{otherwise}
+\end{cases}
+}
+$$
+
+# Exercise B:  
+Let $\theta$ be a positive number.  
+Let $f$ be the following function:  
+
+$$
+f(x) = \begin{cases} \frac{1}{4 \theta^2} x  & \text{if } x \in [0, 2 \theta]  \\
+\frac{1}{2 \theta}  & \text{if } x \in [2 \theta, 3 \theta] 
+\end{cases}
+$$
+
+## 1. Prove that $f$ is a density function.  
+
+For $f$ to be a density function, it needs to complete two conditions: **positivity** and it should **integrates to 1**.   
+
+**Positivity:**  
+For $x \in [0, 2 \theta]$: $X \geq 0$ and $\theta \geq 0$, so $\frac{1}{4 \theta^2} \geq 0$, so  $\frac{1}{4 \theta^2} x \geq 0$ as well.  
+
+For $x \in [2 \theta, 3 \theta]$, the value is $\frac{1}{2 \theta}$ so it is positive, for the same reasons as above.  
+
+Everywhere else, $f(x) = 0$.  
+
+Thus, the **positivity condition is respected**.  
+
+**Integrates to 1:**  
+We integrate only between [0, 3$\theta$], as everywhere else $f(x) = 0$.  
+
+$$
+\int_{- \infty}^{\infty} f(x) dx = \int_0^{2 \theta} \frac{1}{4 \theta^2} x\, dx\, + \int_{2 \theta}^{3 \theta} \frac{1}{2 \theta} dx
+$$
+We do each computation separately:  
+First part:  
+$$
+\begin{aligned}
+\int_0^{2 \theta} \frac{1}{4 \theta^2} x\, dx &= \frac{1}{4 \theta^2} \int_0^{2 \theta} x \, dx  \\
+\\
+&= \frac{1}{4 \theta^2} \left[ \frac{1}{2} x^2 \right]_0^{2 \theta} \\
+\\
+&= \frac{1}{4 \theta^2} \left( \frac{1}{2} \cdot (2 \theta)^2 -  \frac{1}{2} \cdot 0^2\right) \\
+\\
+&= \frac{1}{4 \theta^2} \cdot \frac{4 \theta^2}{2}\\
+\\
+&= \frac{1}{2}
+\end{aligned}
+$$
+Second part:  
+$$
+\begin{aligned}
+\int_{2 \theta}^{3 \theta} \frac{1}{2 \theta} \, dx &= \frac{1}{2 \theta} \int_{2 \theta}^{3 \theta} 1 \, dx  \\
+\\
+&= \frac{1}{2 \theta} \left[ x \right]_{2 \theta}^{3 \theta} \\
+\\
+&= \frac{1}{2 \theta}  \cdot \left( 3 \theta - 2 \theta \right) \\
+\\
+&= \frac{1}{2 \theta} \cdot \theta \\
+\\
+&= \frac{1}{2}
+\end{aligned}
+$$
+
+We add them:  
+$$
+\begin{aligned}
+\int_{- \infty}^{\infty} f(x) dx &= \int_0^{2 \theta} \frac{1}{4 \theta^2} x\, dx\, + \int_{2 \theta}^{3 \theta} \frac{1}{2 \theta} dx\\
+\\
+&= \frac{1}{2} + \frac{1}{2} \\
+\\
+&= 1
+\end{aligned}
+$$
+
+Both conditions are respected:  
+$f(x) \geq 0$ for all $x$  and $\int_{- \infty}^{\infty} f(x) \, dx = 1$  
+
+Therefore, $f(x)$ is a **density function**.  
+
+## 2. Let X be a random variable with density $f$. Compute the expectation and variance of X.  
+
+$$
+\mathbb{E}[X] = \int_{- \infty}^{\infty} x \, f(x) \, dx
+$$
+Since $f(x) = 0$ outside $[0, {3 \theta}]$, the integrale is reduce to:  
+
+$$
+\mathbb{E}[X] = \int_0^{2 \theta} \frac{1}{4 \theta^2}\, x^2\, dx\, + \int_{2 \theta}^{3 \theta} \frac{1}{2 \theta} \, x\, dx
+$$
+
+Part 1: 0 to $2 \theta$  
+
+$$
+\begin{aligned}
+\int_0^{2 \theta} \frac{1}{4 \theta^2}\, x^2\, dx &= \frac{1}{4 \theta^2}\, \int_0^{2 \theta} x^2 \, dx \\
+\\
+&= \frac{1}{4 \theta^2}\, \left[ \frac{1}{3} x^3 \right]_0^{2 \theta} \\
+\\
+&= \frac{1}{4 \theta^2} \left( \frac{1}{3} \cdot (2 \theta)^3 - 0 \right) \\ 
+\\
+&= \frac{1}{4 \theta^2} \left( \frac{1}{3} \cdot 8 \theta^3 \right) \\
+\\  
+&= \frac{1}{4 \theta^2} \cdot \frac{8 \theta^3}{3} \\
+\\
+&= \frac{8 \theta^3}{12 \theta^2} \\
+\\
+&= \frac{2}{3} \theta
+\end{aligned}
+$$
+
+Part 2: $2 \theta$ to $3 \theta$:  
+
+$$
+\begin{aligned}
+\int_{2 \theta}^{3 \theta} \frac{1}{2 \theta}\, x\, dx &= \frac{1}{2 \theta}\, \int_{2 \theta}^{3 \theta} x \, dx \\
+\\
+&= \frac{1}{2 \theta}\, \left[ \frac{1}{2} x^2 \right]_{2 \theta}^{3 \theta} \\
+\\
+&= \frac{1}{2 \theta} \left( \frac{1}{2} \cdot (3 \theta)^2 - \frac{1}{2}\cdot (2 \theta)^2 \right) \\ 
+\\
+&= \frac{1}{2 \theta} \left( \frac{1}{2} \cdot 9 \theta^2 - \frac{1}{2}\cdot 4 \theta^2 \right) \\ 
+\\
+&= \frac{1}{2 \theta}  \left( \frac{1}{2} \cdot 5 \theta^2 \right) \\
+\\
+&= \frac{1}{4 \theta} \cdot 5 \theta^2 \\ 
+\\
+&= \frac{5}{4} \theta
+\end{aligned}
+$$
+
+Then, we add them:  
+$$
+\begin{aligned}
+\mathbb{E}[X] &= \frac{2}{3} \theta  + \frac{5}{4} \theta \\
+\\
+&= (\frac{8}{12} + \frac{15}{12}) \theta \\
+\\
+&= \frac{23}{12} \theta
+\end{aligned}
+$$
+
+So the expectation is :  
+
+$$
+\boxed{
+\mathbb{E}[X] = \frac{23}{12} \theta 
+}
+$$
+
+Let's compute the **variance**:  
+We will use the following formula:  
+
+$$
+Var(X) = \mathbb{E}[X^2] - (\mathbb{E}[X])^2
+$$
+**Step 1**: compute $\mathbb{E}[X^2]$.  
+$$
+\begin{aligned}
+\mathbb{E}[X^2]  &= \int_{- \infty}^{\infty} x^2 \, f(x) \, dx \\
+\\
+&= \int_0^{2 \theta} \frac{1}{4 \theta^2}\, x^3\, dx\, + \int_{2 \theta}^{3 \theta} \frac{1}{2 \theta} \, x^2\, dx \\
+\\
+&= \frac{1}{4 \theta^2}\int_0^{2 \theta}  x^3\, dx\, + \frac{1}{2 \theta} \int_{2 \theta}^{3 \theta}  x^2\, dx \\
+\\
+&= \frac{1}{4 \theta^2}\left[ \frac{1}{4} x^4 \right]_{0}^{2 \theta} + \frac{1}{2 \theta}\left[ \frac{1}{3} x^3 \right]_{2 \theta}^{3 \theta} \\
+\\
+&= \frac{1}{4 \theta^2}\left( \frac{1}{4} \cdot 16 \theta^4 \right) + \frac{1}{2 \theta}\left( \frac{1}{3} \cdot 27 \theta ^3 - \frac{1}{3} \cdot 8 \theta ^3\right) \\
+\\
+&= \frac{1}{4 \theta^2} \cdot 4 \theta^4 + \frac{1}{2 \theta^2} \cdot \frac{19}{3} \theta^3 \\
+\\
+&= \theta^2 + \frac{19 \theta^3}{6 \theta} \\
+\\
+&= \frac{25 }{6 }\theta^2
+\end{aligned}
+$$
+**Step 2**: compute $(\mathbb{E}[X])^2$  
+$$
+\begin{aligned}
+(\mathbb{E}[X])^2 &= \left( \frac{23}{12} \theta \right)^2 \\
+\\
+&= \frac{529}{144} \theta^2
+\end{aligned}
+$$
+
+And then, we just need to substract them to compute the variance:  
+$$
+\begin{aligned}
+Var(X) &= \mathbb{E}[X^2] - (\mathbb{E}[X])^2 \\
+\\ 
+&= \frac{25 }{6 }\theta^2 - \frac{529}{144} \theta^2 \\
+\\
+&= \left(\frac{25}{6} - \frac{529}{144} \right) \theta^2 \\
+\\
+&= \left(\frac{600 -529}{144} \right) \theta^2 \\
+\\
+&= \frac{71}{144} \theta^2 
+\end{aligned}
+$$
+
+Finally we have:  
+$$
+\begin{aligned}
+\boxed{ \mathbb{E}[X] = \frac{23}{12} \theta} &\qquad \text{and} &\quad \boxed{Var(X) = \frac{71}{144} \theta^2}
+\end{aligned}
+$$
+
+## 3. Find an estimator $\hat{\theta}$ of $\theta$ using the method of moments.  
+
+We consider the random variable X with density $f$ depending on the parameter $\theta > 0$. 
+We observed $n$ independent realizations $X_1$, $X_2$,..., $X_n$ with all the same distribution as $X$.   
+
+An estimator of $\theta$ is a function of the observed data $X_1$,..., $X_n$ for which we can compute a value thanks to the observations.  
+
+Moments are quantitative measures that describe the shape and characteristics of a distribution (first moment = mean, second moment = variance, etc). The **method of moments* matches sample moments (that we can measure from observations) to theoretical moments (with infinite population, we can't really compute).  
+
+Then, for the first moment we have:  
+
+  - the theoretical first moment is the **expectation** of $X$:  
+  
+$$
+\mathbb{E}[X] = \frac{23}{12} \theta
+$$
+  
+  - the first sample moment is the **sample mean**:  
+  
+$$
+\overline{X} = \frac{1}{n} \sum_{i=1}^n X_i
+$$
+
+An estimator $\hat\theta$ for $\theta$ would be a solution of the moment equation:  
+$$
+\begin{aligned}
+\mathbb{E}[X] &= \overline{X} \\
+\\
+\Leftrightarrow \frac{23}{12} \theta &= \overline{X}
+\end{aligned}
+$$
+Thus, an estimator would be : 
+
+$$
+\boxed{
+\begin{aligned}
+\hat\theta_1 &= \frac{12}{23} \overline{X} \\
+\\
+\Leftrightarrow \hat\theta_1 &= \frac{12}{23} \cdot \frac{1}{n} \sum_{i=1}^n X_i
+\end{aligned}
+}
+$$
+
+We could also have another estimator for the second moment :  
+
+  - the theoretical second moment (the variance) of $X$:
+  
+$$
+Var(X) = \frac{71}{144} \theta^2
+$$
+
+  - the sample variance $S^2$: 
+  
+$$
+S^2 = \frac{1}{n} \sum_{i=1}^n (X_i - \overline{X})^2
+$$
+The estimator would be obtained thanks to the moment equation:
+
+$$
+\begin{aligned}
+Var(X) &= S^2 \\
+\\
+\Leftrightarrow \frac{71}{144} \theta^2 &= S^2
+\end{aligned}
+$$
+
+Thus, the estimator would be : 
+
+$$
+\begin{aligned}
+\hat\theta_2^2 &= \frac{144}{71} S^2 \\
+\\
+\Leftrightarrow \hat\theta_2 &= \sqrt{\frac{144}{71} \cdot \frac{1}{n} \sum_{i=1}^n (X_i-\overline{X})^2}
+\end{aligned}
+$$
+
+## 4. Define a confidence interval for $\theta$.
+
+We search a confidence interval for $\theta$, which is a range of the possible values for the unknown parameter $\theta$, based on our sample $X_1$, $X_2$,..., $X_n$. Thus, we need to have an idea of the variability of the estimator. 
+
+$$
+\text{Estimator ± Margin of error}
+$$
+
+$\hat\theta$ is the estimator of $\theta$, obtained using the method of moments based on the sample mean.  
+
+$$
+\hat\theta = \frac{12}{23} \overline{X} \qquad \text{and} \qquad \overline{X} = \frac{1}{n} \sum_{i=1}^n X_i
+$$
+The margin of error depends on the standard error : $SE(\hat\theta) = \sqrt{Var(\hat\theta)}$.
+
+
+The theoretical expectation and variance of $X$ are: 
+
+$$
+\mathbb{E}[X] = \frac{23}{12} \theta \qquad \text{and} \qquad Var(X) = \frac{71}{144} \theta^2
+$$
+Here we see that the variance depends on $\theta$, which is an unknown parameter that we are trying to estimate and for which we are searching the confidence interval. As a consequence, the variance remains unknown and we can just estimate it. We are thus in a context of **not Gaussian settings and unknown variance**.  
+
+The confidence interval is such that :
+$$
+1 - \alpha = P( \theta \in [A, B]) \qquad \text{with} \, 1 - \alpha \, \text{the confidence level}
+$$
+We can write :
+
+$$
+A = \hat\theta - \text{margin} \qquad \text{and} \qquad B = \hat\theta + \text{margin}
+$$
+So : 
+
+$$
+1 - \alpha = P( -\text{margin} \leq \hat\theta  \leq \text{margin} )
+$$
+
+Even if $X$ is not Gaussian, thanks to the **Central Limit Theorem**, we assume that the sample mean $\overline{X}$ is approximately normal for large $n$. Because $\hat\theta$ is a linear function of the sample mean: $\hat\theta = \frac{12}{23} \overline{X}$, $\hat\theta$ is approximately normal.  
+So for large $n$:
+
+$$
+\hat\theta \approx \mathcal{N} \left(\theta, Var(\hat\theta) \right)
+$$
+
+So we have:
+
+$$
+\begin{aligned}
+Var(\hat\theta) &= Var \left(\frac{12}{23} \overline{X} \right) \\
+\\
+&= \left(\frac{12}{23} \right)^2 Var(\overline{X} )    \qquad \text{because if } Y = aX \text{, with } a \text{ constant, then } Var(Y) = a^2Var(X)
+\end{aligned}
+$$
+
+Then the variance of the mean: 
+
+$$
+\begin{aligned}
+Var(\overline{X}) &= \frac{1}{n^2} \sum_{i=1}^n Var(X_i) \\
+\\
+&= \frac{n Var(X)}{n^2} \qquad \text{because the variance of the sum of independent variables is the sum of their variances} \\
+\text{and there are identically distributed} \\
+\\
+&= \frac{Var(X)}{n}
+\end{aligned}
+$$
+
+Thus, all put together we have :
+$$
+\begin{aligned}
+Var(\hat\theta) &= \left(\frac{12}{23} \right)^2 Var(\overline{X} ) \\
+\\
+&= \left(\frac{12}{23} \right)^2 \cdot \frac{1}{n} \cdot Var(X) \\
+\\
+&= \left(\frac{12}{23} \right)^2 \cdot \frac{1}{n} \cdot \frac{71}{144} \theta^2 \\
+\\
+&= \frac{144}{529} \cdot \frac{71}{144} \cdot \frac{1}{n} \theta^2 \\
+\\
+&= \frac{71}{529 n} \theta^2
+\end{aligned}
+$$
+
+The variance of $\theta$ is still unknown because it depends on $\theta$ which is unknown.
+But now we can deduce the standard error of $\hat\theta$
+
+$$
+\begin{aligned}
+SE(\hat\theta) &= \sqrt{Var(\hat\theta)} \\
+\\
+&= \sqrt{\frac{71}{529 n} \theta^2} \\
+\\
+&= \frac{\theta \sqrt{71}}{23 \sqrt{n}}
+\end{aligned}
+$$
+It still depend on $\theta$ which is unknown but the Slutsky's lemma allows us to replace $\theta$ by its estimator $\hat\theta$ for large $n$, since $\hat\theta \xrightarrow{p} \theta$ (converge in probability).
+
+Thus: 
+
+$$
+SE(\hat\theta) = \frac{\theta \sqrt{71}}{23 \sqrt{n}} \approx \frac{\hat\theta \sqrt{71}}{23 \sqrt{n}}
+$$
+
+For now, we know that $\hat\theta$ is approximately normal when $n$ large, but the variance and standard error still depends on $\theta$, and we don't know the shape of its distribution. 
+Thus, we standardize $\hat\theta$ to have something that follow approximately a standard normal distribution:
+
+The standardized estimator is:
+$$
+Z_n = \frac{\hat\theta - \theta}{SE(\hat\theta)}
+$$
+Now :
+$$
+Z_n \approx \mathcal{N}(0, 1)
+$$
+And we can write:
+
+$$
+P\left( - z_{1 - \frac{\alpha}{2}} \leq  \frac{\hat\theta - \theta}{SE(\hat\theta)} \leq z_{1 - \frac{\alpha}{2}} \right) \approx 1 - \alpha
+$$
+where $z_{1 - \frac{\alpha}{2}}$ is the **standard normal critical value** which can be find in specific tables (that is why we also need to know the distribution).  
+For example, for a risk of 5% ($\alpha = 0.05)$ we have a 95% confidenc interval ($1 - \alpha = 0.95$) and $z_{1 - \frac{\alpha}{2}} = z_{0.975} \approx 1.96$.  
+
+We multiply everything my $SE(\hat\theta)$ and rearranging :  
+
+$$
+P \left( \hat\theta - z_{1 - \frac{\alpha}{2}} \cdot SE(\hat\theta) \leq \theta \leq \hat\theta + z_{1 - \frac{\alpha}{2}} \cdot SE(\hat\theta) \right) \approx 1 - \alpha
+$$
+And finally we can write the confidence interval of $\theta$:  
+
+$$
+\boxed{
+\theta \in \left[ \hat\theta - z_{1 - \frac{\alpha}{2}} \cdot \frac{\hat\theta \sqrt{71}}{23 \sqrt{n}}, \quad  \hat\theta + z_{1 - \frac{\alpha}{2}} \cdot \frac{\hat\theta \sqrt{71}}{23 \sqrt{n}} \right]
+}
+$$
+
+## 5. Simulate 1000 observations of $X$.
+
+We want to simulate 1000 random values that follow the distribution of $X$. Since $X$ does not follow a standard distribution, we cannot easily simulate it. We are going to use the **inverse transform sampling method**. The idea is that any **continuous random variable** can be generated from a **uniform random variable** on [0, 1], by applying the **inverse of its cumulative distribution function (CDF)**. 
+
+Basically, we are going to:
+
+- **step 1**: compute the CDF of $f(x)$: $F(x)$, 
+- **step 2**: compute the inverse of $F(x)$: $F^{-1}(x)$, 
+- **step 3**: generate a uniform random variable $U \sim Uniform(0,1)$, 
+- **step 4**: transform them using $X = F^{-1}(U)$.  
+
+With this method we should obtain the 1000 observations following the distribution of $X$.
+
+$X$ has for density: 
+$$
+f(x) = \begin{cases} \frac{1}{4 \theta^2} x  & \text{if } x \in [0, 2 \theta]  \\
+\frac{1}{2 \theta}  & \text{if } x \in [2 \theta, 3 \theta] \\
+0 & \text{otherwise}
+\end{cases}
+$$
+**Step 1**: Compute the CDF of $f(x)$: $F(x)$  
+
+By definition: 
+
+$$
+\begin{aligned}
+F(x) &= P(X \leq x) \\
+\\
+&=\int_{- \infty}^{x} f(x)\, dx
+\end{aligned}
+$$
+But because the distribution of $f(x)$ is piecewise, so we integrate it in piece:  
+
+When $x < 0$: $f(x) = 0$, thus $F(x) = 0$  
+
+When $0 \leq x \leq 2 \theta$: 
+
+$$
+\begin{aligned}
+F(x) &= \int_{0}^{x} f(x)\, dx \\
+\\
+&= \int_{0}^{x} \frac{1}{4 \theta^2} x\, dx \\
+\\
+&= \frac{1}{4 \theta^2} \left[ \frac{1}{2} x^2 \right]_0^{x} \qquad \text{see computation details above}\\
+\\
+&= \frac{1}{4 \theta^2} \left( \frac{1}{2} x^2 - 0\right) \\
+\\
+&= \frac{1}{4 \theta^2} \cdot \frac{1}{2} x^2 \\
+\\
+So \qquad F(x) &= \frac{x^2}{8 \theta^2} \qquad \text{when } 0 \leq x \leq 2 \theta
+\end{aligned}
+$$
+When $2 \theta \leq x \leq 3 \theta$: 
+
+$$
+\begin{aligned}
+F(x) &= \int_0^{2\theta} f(x) dx + \int_{2 \theta}^{x} f(x) dx \qquad \text{Because we are in CDF, we accumulate the probabilities} \\
+\\
+&= \int_0^{2\theta} \frac{1}{4 \theta^2} x\, dx + \int_{2 \theta}^{x} \frac{1}{2 \theta}\, dx \\
+\\
+&= \frac{1}{4 \theta^2} \left[ \frac{1}{2} x^2 \right]_0^{2 \theta} + \frac{1}{2 \theta} \left[ x \right]_{2 \theta}^{x} \\
+\\
+&= \frac{1}{4 \theta^2} \left( \frac{1}{2} (2 \theta^2) \right) + \frac{1}{2 \theta} \left( x - 2\theta \right) \\
+\\
+&= \frac{1}{4 \theta^2} \cdot \frac{1}{2} \cdot 4 \theta^2 + \frac{x - 2 \theta}{2 \theta} \\
+\\
+&= \frac{1}{2} + \frac{x - 2 \theta}{2 \theta} \\
+\\
+&= \frac{\theta + x - 2 \theta}{2 \theta} \\
+\\
+&= \frac{x - \theta}{2 \theta}
+\end{aligned}
+$$
+
+When $x \geq 3 \theta$: $F(x) = 1$ because we are above the possible values of $x$ and we thus already reached 1.  
+
+Thus the final CDF is : 
+
+$$
+F(x) = \begin{cases} 
+0 & \text{if } x \leq 0\\
+\frac{x^2}{8 \theta^2}  & \text{if } 0 \leq x \leq  2 \theta  \\
+\frac{x - \theta}{2 \theta}  & \text{if } 2 \theta \leq x \leq  3 \theta \\
+1 & \text{if } x \geq  3 \theta
+\end{cases}
+$$
+
+**Step 2**: find the invert of $F(x)$: $F^{-1}(x)$.  
+The inverse function is such that $F^{-1}(F(x)) = x$.  
+In fact, we want the function that gives x for a given cumulative probability $t \in [0, 1]$.  
+
+When $0 \leq x \leq  2 \theta$:
+
+$$
+\begin{aligned}
+F(x) &= \frac{x^2}{8 \theta^2} = u \\
+\\
+\Rightarrow x^2 &= u 8 \theta^2 \\
+\\
+\Rightarrow x &= \sqrt{u 8 \theta^2} \\
+\\
+&= \sqrt{u 8 \theta^2} \\
+\\
+&= \sqrt{u \cdot 2 \cdot 4 \theta^2} \\
+\\
+&= 2\theta \sqrt{2u}
+\end{aligned}
+$$
+
+When $2\theta \leq x \leq 3 \theta$:
+
+$$
+\begin{aligned}
+F(x) &= \frac{x - \theta}{2 \theta} = u \\
+\\
+\Rightarrow x -\theta &= u 2 \theta \\
+\\
+\Rightarrow x &= 2 \theta u + \theta \\
+\\
+&= (2u + 1)\theta \\
+\end{aligned}
+$$
+We also change the limits of $u$ for $F^{-1}(x)$ because it is now defined on [0, 1].  
+So now we have :
+
+$$
+F^{-1}(u) = \begin{cases} 
+2\theta \sqrt{2u} & \text{if } 0 \leq u \leq  0.5 \qquad \text{because } F(2 \theta) = \frac{2 \theta^2}{8 \theta^2} = 0.5\\
+(2u + 1)\theta  & \text{if } 0.5 < u \leq  1
+\end{cases}
+$$
+**Step 3**: generate a uniform random variable $U \sim Uniform(0,1)$
+
+```{r generate-unif}
+set.seed(42) # for reproducibility 
+n <- 1000
+U <- runif(n, min =0, max = 1)
+```
+
+**Step 4**: transform them using $X = F^{-1}(U)$.  
+
+
+```{r inverse-fct}
+# Create the inverse function: 
+invF <- function (u, theta) {
+  ifelse( u <= 0.5, 
+          2 * theta * sqrt(2 * u),
+          (2 * u + 1) * theta )
+}
+```
+
+Now we can transform our 1000 observations generated with the uniform distribution:
+```{r transform-U}
+# define theta: 
+theta <- 1
+X <- invF(U, theta)
+```
+
+## 6. Show with a graph that your answer is correct. 
+Let's plot an histogram to visualize the data we simulated:
+
+We can plot the curve for the theoretical PDF to see if it matches the simulated distribution :
+$$
+f(x) = \begin{cases} \frac{1}{4 \theta^2} x  & \text{if } x \in [0, 2 \theta]  \\
+\frac{1}{2 \theta}  & \text{if } x \in [2 \theta, 3 \theta] \\
+0 & \text{otherwise}
+\end{cases} 
+$$
+
+```{r pdf}
+# Theoretical density function
+f <- function(x, theta) {
+  ifelse(x >= 0 & x <= 2*theta, 
+         (1/(4*(theta^2))) * x,
+         ifelse(x >= 2*theta & x <= 3*theta, 
+                1/(2*theta), 
+                0))
+}
+``` 
+
+Now let's plot the histogram and the PDF curve:
+
+```{r plot}
+hist(X, probability = TRUE, breaks = 50, 
+     main = paste0("Simulated X (n = ", n, " with theta = ", theta, ")" )) 
+curve(f(x, theta), add = TRUE, col = "red", lwd = 2)
+```
+We can see that the PDF curve matches quite well the data we simulated.  
+
+Also, now that we have defined $\theta$ we can also compare the sample mean and the expectation and the variances:
+```{r mean-expectation}
+sample_mean <- round(mean(X), 2)
+expectation   <- round((23/12) * theta ,2)
+
+sample_var  <- round(var(X), 2)
+Var_X   <- round((71/144) * theta^2, 2)
+
+cat("Sample mean = ", sample_mean, "\n")
+cat("Expectation = ", expectation, "\n")
+cat("Sample variance = ", sample_var, "\n")
+cat("Var(X) = ", Var_X, "\n")
+```
+Not so bad !  
+
+
+# Exercise C:  
+Let $X$ and $Y$ be two independent standard Gaussian random variables.  
+$\alpha$ a positive real number.
+
+Let $\epsilon$ be a random variable, independent from $X$ and $Y$ taking values $- \alpha$ and $\alpha$ with same probability 1/2.  
+
+Let $Z = \epsilon X$.  
+
+## 1. Prove that $Z$ is Gaussian random variable.
+
+Let $t \in \mathbb{R}$. 
+
+With the low of total of total probability:
+
+$$
+\begin{aligned}
+F_Z(t) &= P(Z \leq t) \\
+\\
+&= P(\epsilon X \leq t) \\
+\\
+&= P(\epsilon X \leq t, \epsilon = \alpha) + P(\epsilon X \leq t, \epsilon = - \alpha) \qquad \text{because } \epsilon \text{ can take only } \alpha \text{ or } - \alpha \\
+\\
+&= P(\alpha X \leq t, \epsilon = \alpha) + P(-\alpha X \leq t, \epsilon = - \alpha) \\
+\\
+&= P(\alpha X \leq t) \cdot P(\epsilon = \alpha) + P(-\alpha X \leq t) \cdot P( \epsilon = - \alpha) \qquad \text{because } \epsilon \text{ and } X \text{ are independent.} \\
+\\
+&= \frac{1}{2} P(\alpha X \leq t) + \frac{1}{2} P(- \alpha X \leq t) \qquad \text{because } P(\epsilon = \alpha) = P(\epsilon = - \alpha) = \frac{1}{2} \\
+\\
+&= \frac{1}{2} P(X \leq \frac{t}{\alpha}) + \frac{1}{2} P(X \geq - \frac{t}{\alpha}) \qquad \text{divide by } \alpha \text{ because } \alpha > 0 \\
+\\
+&= \frac{1}{2}\left( P(X \leq \frac{t}{\alpha}) + P(X \geq - \frac{t}{\alpha}) \right) 
+\end{aligned}
+$$
+
+Because $X \sim \mathcal{N}(0, 1)$ it is symmetric and we can say: 
+$$
+P(X \leq \frac{t}{\alpha}) = P(X \geq - \frac{t}{\alpha}) 
+$$
+So: 
+$$
+\begin{aligned}
+F_Z(t) &= \frac{1}{2}\left( P(X \leq \frac{t}{\alpha}) + P(X \geq - \frac{t}{\alpha}) \right) \\
+\\ 
+&= \frac{1}{2}\left( 2\cdot P(X \leq \frac{t}{\alpha}) \right) \\
+\\
+&= P(X \leq \frac{t}{\alpha})
+\end{aligned}
+$$
+
+The distribution of $F_Z(t)$ is the same as the one of $X$ but scaled by $\alpha$.  
+Thus $Z$ is a **Gaussian random variable**:
+
+$$
+\boxed{
+Z \sim \mathcal{N}(0, \alpha^2)
+}
+$$
+
+## 2. Determine the distribution of the random vector $U = (Y, Y - Z, Y + Z)$.
+
+$$
+Y \sim \mathcal{N}(0,1) \qquad \text{and} \qquad Z\sim \mathcal{N}(0,\alpha^2)
+$$
+
+$Z = \epsilon X$ and $X$ and $Y$ are independent. So because $Z$ is a function of $X$, we can deduce that $Z$ and $Y$ are independent.  
+
+We have : 
+$$
+U = \begin{pmatrix}
+U_1 \\ U_2 \\ U_3
+\end{pmatrix}
+= \begin{pmatrix}
+Y \\ Y - Z \\ Y + Z
+\end{pmatrix}
+$$
+Because $U$ is a vector made with **Gaussian random variables** and **linear transformation of independent Gaussian random variables**, we can say that $U$ is a **multivariate random vector**.  
+
+To find its distribution, we just need to find $\mathbb{E}[U]$ and $Var(U)$.  
+
+**Expectation**:  
+If the expectation of $Y$ and $Z$ exist, thus the expectation of $U$ exists.  
+Also, $\mathbb{E}[Y] = 0$ and $\mathbb{E}[Z] = 0$, so we have :
+
+$$
+\mathbb{E}[U] = \begin{pmatrix}
+\mathbb{E}[U_1] \\ \mathbb{E}[U_2] \\ \mathbb{E}[U_3]
+\end{pmatrix}
+= \begin{pmatrix}
+\mathbb{E}[Y] \\ \mathbb{E}[Y - Z] \\ \mathbb{E}[Y + Z]
+\end{pmatrix}
+= \begin{pmatrix}
+0 \\ 0 \\ 0
+\end{pmatrix}
+$$
+
+**Variance**:  
+$$
+Var(U) =  \begin{pmatrix}
+cov(U_1, U_1) & cov(U_1, U_2) & cov(U_1, U_3) \\
+cov(U_2, U_1) & cov(U_2, U_2) & cov(U_2, U_3) \\
+cov(U_3, U_1) & cov(U_3, U_2) & cov(U_3, U_3)
+\end{pmatrix}
+$$
+
+As it is a lot of computations let's do first :
+$$
+\begin{aligned}
+cov(Y, Z) &= cov(Z, Y) = \mathbb{E}[YZ] - \mathbb{E}[Y]\cdot\mathbb{E}[Z] = 0 \\
+\\
+cov(Y, Y) &= Var(Y) = 1 \\
+\\
+cov(Z, Z) &= Var(Z) = \alpha^2
+\end{aligned}
+$$
+
+
+Let's do it step by step:  
+$$
+\begin{aligned}
+cov(U_1, U_1) &= Var(U_1) = Var(Y) = 1\\
+\\
+cov(U_1, U_2) &= cov(Y, Y - Z) = cov(Y, Y) - cov(Y, Z) = Var(Y) - cov(Y, Z) =  1 - 0 = 1 \\
+\\
+cov(U_1, U_3) &= cov(Y, Y+Z)= cov(Y, Y) + cov(Y, Z) = Var(Y) + cov(Y, Z) =  1 + 0 = 1\\
+\\
+cov(U_2, U_1) &= cov(U_1, U_2) = 1 \\
+\\
+cov(U_2, U_2) &= Var(U_2) = Var(Y - Z) = Var(Y) + Var(Z) - 2 cov(Y, Z) = 1 + \alpha^2 - 0 = 1 + \alpha^2 \\
+\\
+cov(U_2, U_3) &= cov(Y-Z, Y+Z) = cov(Y, Y) + cov(Y, Z) - cov(Z, Y) - cov(Z, Z) = 1 + 0 - 0 - \alpha^2 = 1 - \alpha^2 \\
+\\
+cov(U_3, U_1) &= cov(U_1, U_3) = 1 \\
+\\
+cov(U_3, U_2) &= cov(U_2, U_3) = 1 - \alpha^2 \\
+\\
+cov(U_3, U_3) &= Var(U_3) = Var(Y+Z) = Var(Y) + Var(Z) + 2 cov(Y, Z) = 1 + \alpha^2 + 0 = 1 + \alpha^2
+\end{aligned}
+$$
+
+So we have: 
+
+$$
+Var(U) =  \begin{pmatrix}
+1 & 1 & 1 \\
+1 & 1 + \alpha^2 & 1 - \alpha^2 \\
+1 & 1 - \alpha^2 & 1 + \alpha^2
+\end{pmatrix}
+$$
+
+So the distribution of the vector U is:  
+
+$$
+\boxed{
+U \sim \mathcal{N}\left( 
+\begin{pmatrix}
+0 \\ 0 \\ 0
+\end{pmatrix}, 
+\begin{pmatrix}
+1 & 1 & 1 \\
+1 & 1 + \alpha^2 & 1 - \alpha^2 \\
+1 & 1 - \alpha^2 & 1 + \alpha^2
+\end{pmatrix} \right)
+}
+$$
+
+## 3. Given a sample of $Z$ of size $n$, determine an unbiased estimator of $\alpha^2$ and derive a confidence interval for $\alpha^2$.
+
+**Estimator of $\alpha^2$:**
+
+Let $\hat\alpha^2$ the estimator of $\alpha^2$.  
+
+By definition, if $\hat\alpha^2$ is unbiased, we need:
+
+$$
+\mathbb{E}[\hat\alpha^2] = \alpha^2
+$$
+
+We know that $Var(X) = \alpha^2$. Thus, we search the estimator for the second moment. The estimator is obtained thanks to the moment equation that matches the theoretical variance $Var(X)$ to the sample variance $S^2$: 
+The theoretical second moment (the variance) of $X$:
+  
+$$
+\begin{aligned}
+Var(X) &= S^2 \\
+\\
+\Leftrightarrow \alpha^2 &= \frac{1}{n} \sum_{i=1}^n (Z_i - \overline{Z})^2 
+\end{aligned}
+$$
+
+With the equation moment for the estimator for the first moment we know that:
+$$
+\mathbb{E}[Z] = \overline{Z} = 0
+$$
+
+So we have:  
+
+$$
+\begin{aligned}
+\alpha^2 &= \frac{1}{n} \sum_{i=1}^n (Z_i - \overline{Z})^2 \\
+\\
+&= \frac{1}{n} \sum_{i=1}^n (Z_i - 0)^2 \\
+\\
+&= \frac{1}{n} \sum_{i=1}^n Z_i^2
+\end{aligned}
+$$
+
+So the estimator for $\alpha^2$ is:
+$$
+\boxed{
+\hat\alpha^2 = \frac{1}{n} \sum_{i=1}^n Z_i^2
+}
+$$
+
+Now we need to check if it is unbiased:
+
+$$
+\begin{aligned}
+\mathbb{E}[\hat\alpha^2] &= \mathbb{E} \left[ \frac{1}{n} \sum_{i=1}^n Z_i^2 \right] \\
+\\
+&= \frac{1}{n} \sum_{i=1}^n \mathbb{E}[Z_i^2]
+\end{aligned}
+$$
+
+By definition we have :
+$$
+\begin{aligned}
+Var(Z) &= \mathbb{E}[Z^2] - (\mathbb{E}[Z])^2 \\
+\\
+\Leftrightarrow \mathbb{E}[Z^2] &= Var(Z) + (\mathbb{E}[Z])^2 \\
+\\ 
+&= Var(Z) + 0 \\
+\\
+&= \alpha^2
+\end{aligned}
+$$
+
+So:
+$$
+\begin{aligned}
+\mathbb{E}[\hat\alpha^2] &= \frac{1}{n} \sum_{i=1}^n \mathbb{E}[Z_i^2] \\
+\\
+&= \frac{1}{n} \sum_{i=1}^n \alpha^2 \\
+\\
+&= \frac{1}{n} \cdot n \cdot \alpha^2 \\
+\\
+&= \alpha^2
+\end{aligned}
+$$
+
+So the estimator $\hat\alpha^2$ is **unbiased**.
+
+**Confidence interval for $\alpha^2$:**  
+We are in a context of **Gaussian settings but unknown variance** (since $\alpha^2$ is the parameter we want to estimate).
+
+We want to find the confident interval for $\alpha^2$ such that : 
+
+$$
+\begin{aligned}
+1-\gamma &= P(\alpha^2 \in [A, B]) \qquad \text{with } 1-\gamma \text{ the level of confidence of the interval} \\
+\\
+1-\gamma &= P(A \leq \alpha^2 \leq B)
+\end{aligned}
+$$
+
+where A and B are the bounds of the confidence interval. The bounds need to be function of the data, but we need to know the distribution.
+
+We know that :
+$$
+Z\sim \mathcal{N}(0, \alpha^2)
+$$
+So if we scale it by dividing by $\alpha$ we obtain a standard Gaussian distribution : 
+
+$$
+\frac{Z}{\alpha} \sim \mathcal{N}(0,1)
+$$
+If we use only $\frac{Z}{\alpha}$, we know the distribution but the problem is that is does not directly depend on $\alpha^2$ so w cannot have a probabilistic statement about $\alpha^2$.   
+So, we are going to use the squares: $\left( \frac{Z}{\alpha} \right)^2$ because we know that this follow a $\chi^2$ distribution. 
+Indeed, by definition, the square of a standard normal random variables follows a $\chi^2$ distribution, with $n$ degree of freedom.  
+Thus:  
+
+$$
+\left( \frac{Z}{\alpha} \right)^2 \sim \chi^2
+$$
+
+Let $Z_1$,..., $Z_n$ be observations of $Z$, now we have:  
+$$
+\left( \frac{Z_i}{\alpha} \right)^2 \sim \chi^2_1\\
+\\
+\Leftrightarrow \sum_{i=1}^n \left( \frac{Z_i}{\alpha} \right)^2 \sim \chi^2_n \\
+\\
+\Leftrightarrow \frac{1}{\alpha^2} \cdot \sum_{i=1}^n (Z_i)^2 \sim \chi^2_n
+$$
+So we have something where we know the distribution, it depends on the data and we can isolate $\alpha^2$.  
+
+We now have :  
+$$
+P \left( \chi^2_{n,\gamma_1} \quad \leq \quad \frac{1}{\alpha^2} \cdot \sum_{i=1}^n (Z_i)^2 \quad \leq \quad \chi^2_{n,1 - \gamma_2} \right)  \text{with } \gamma_1, \gamma_2 > 0 \text{ and } \gamma_1 + \gamma_2 = \gamma
+$$
+
+So we can finally isolate $\alpha^2$ !
+$$
+P \left( \chi^2_{n,\gamma_1} \quad \leq \quad \frac{1}{\alpha^2} \cdot \sum_{i=1}^n (Z_i)^2 \quad \leq \quad \chi^2_{n,1 - \gamma_2} \right) \\
+\\
+\Leftrightarrow P \left( \chi^2_{n,\gamma_1} \cdot \alpha^2 \quad \leq \quad \sum_{i=1}^n (Z_i)^2 \quad \leq \quad \chi^2_{n,1 - \gamma_2} \cdot \alpha^2 \right) 
+$$
+$$
+\begin{aligned}
+\chi^2_{n,\gamma_1} \cdot \alpha^2 \quad \leq \quad \sum_{i=1}^n (Z_i)^2  &\qquad \sum_{i=1}^n (Z_i)^2 \quad \leq \quad \chi^2_{n,1 - \gamma_2} \cdot \alpha^2 \\
+\\
+\alpha^2 \quad \leq \quad \frac{\sum_{i=1}^n (Z_i)^2}{\chi^2_{n, \gamma_1}} &\qquad \frac{\sum_{i=1}^n (Z_i)^2}{\chi^2_{n,1 - \gamma_2}} \quad \leq \quad  \alpha^2 \\
+\end{aligned}
+$$
+
+So at the end we have:
+
+$$
+P \left( \frac{\sum_{i=1}^n (Z_i)^2}{\chi^2_{n, 1 - \gamma_2}} \quad \leq \quad \alpha^2 \quad \leq \quad \frac{\sum_{i=1}^n (Z_i)^2}{\chi^2_{n,\gamma_1}} \right)
+$$
+
+
+so the confidence interval for $\alpha^2$ is :
+
+$$
+\boxed{
+\left[ \frac{\sum_{i=1}^n (Z_i)^2}{\chi^2_{n,1 - \gamma_2}} \quad ,\quad \frac{\sum_{i=1}^n (Z_i)^2}{\chi^2_{n, \gamma_1}} \right]
+}
+$$
+
+
+## 4. Compute the interval numerically with the attached data for a confidence interval of level 95%.  
+
+First, we need to load the data.  
+```{r data-loading}
+load("D:/_DSTI/A24_Foundations_Statistical_Analysis_ML_Part2/Exam/dataExC.RDATA")
+
+hist(ZZ,)
+```
+
+We want a 95% confidence interval for $\alpha^2$.   
+
+This means:
+
+$$
+1 - \gamma = 0.95 \quad \Rightarrow \quad  \gamma = 0.05, \quad \gamma_1 = \gamma_2 = \frac{\gamma}{2} = 0.025
+$$
+Then, we need the critical values of the $\chi^2$ distribution. These values can be obtained through specific tables and depend on level of confidence we want and the degree of freedom, which depend on the sample size. However, here the degree of freedom is high ($n = 1000$) and most of tables stop at 100. We can thus us the R function `qchisq()`.
+
+```{r chi-quantiles}
+n <- length(ZZ) # sample size
+gamma <- 0.05 # confidenc level
+
+lower_chi2 <- qchisq(1- gamma/2, df = n)
+upper_chi2 <- qchisq(gamma/2, df = n)
+```
+
+Now we can compute the confidence interval of level 95%.  
+
+```{r compute-ci}
+# Compute the sum of square:
+sum_sq <- sum(ZZ^2)
+
+# Compute the bounds of the confidence interval:
+lower_bound <- (sum_sq/ lower_chi2)
+upper_bound <- (sum_sq/ upper_chi2)
+```
+ 
+Then, we can check if the variance $\alpha^2$ is in the confidence interval we computed:
+
+```{r compute-var}
+alpha_sq <- var(ZZ)
+```
+
+
+```{r}
+cat("Sample variance:", round(alpha_sq, 4), "\n")
+cat("95% Confidence interval for variance = [",
+    round(lower_bound, 4), ", ",
+    round(upper_bound, 4), "]\n")
+```
+
+We see that the variance is indeed in the confidence interval.
+
+
+
+
+
+
+
+
+
+
+
