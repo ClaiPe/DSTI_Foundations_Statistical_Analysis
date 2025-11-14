@@ -59,7 +59,7 @@ The project is written in R Markdown, combining LaTeX-based mathematical exposit
 
 4. Explore and Modify: Adjust simulations, test new models, or extend the derivations.
 
-Feel free to experiment—statistics comes to life when theory meets computation 📈
+Feel free to experiment—statistics comes to life when theory meets computation
 
 ---
 
@@ -71,6 +71,7 @@ Well-formatted expressions rendered through LaTeX inside R Markdown:
     - Hypothesis test transformations
 
 ### R Outputs  
+
     - Printed numerical results  
     - Simulation outputs  
     - Visualizations (optional)
