@@ -70,7 +70,7 @@ Well-formatted expressions rendered through LaTeX inside R Markdown:
     - Confidence interval formulas  
     - Hypothesis test transformations
 
-### R Outputs
+### R Outputs  
     - Printed numerical results  
     - Simulation outputs  
     - Visualizations (optional)
